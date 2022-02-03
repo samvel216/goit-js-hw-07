@@ -13,21 +13,21 @@ const createGallery = galleryItems.map((item) =>
 galleryEl.insertAdjacentHTML("beforeend", createGallery);
 
 const handleClick = (event) => {
-    event.preventDefault();
+    event.preventDefault(); 
     if (event.target.nodeName !== "IMG") {
         return;
     }
-    let imgLink = event.target.dataset.source;
-    let imgDescrip = event.target.alt;
-    let imageToLightBox = basicLightbox.create(`<img src="${imgLink}" alt="${imgDescrip}">`);
-    imageToLightBox.show();
-
     const escapeCloseFunk = (event) => {
         if (event.code === "Escape") {
-            imageToLightBox.close();
+           instance.close();
         }
     }
-    window.addEventListener('keyup', escapeCloseFunk);
-    window.addEventListener('keydown', escapeCloseFunk);
+    let imgLink = event.target.dataset.source;
+    let imgDescrip = event.target.alt;
+    let instance = basicLightbox.create(`<img src="${imgLink}" alt="${imgDescrip}">`, {
+        onShow: () => window.addEventListener("keydown", escapeCloseFunk),
+        onClose: () => window.removeEventListener("keydown", escapeCloseFunk)
+    });
+    instance.show();
 }
 galleryEl.addEventListener('click', handleClick);
